@@ -17,6 +17,7 @@
    ```bash
    npx http-server
    ```
+3. Open the 'index.html' in the root folder.
 
 ## Switch Between Branches
 ### For Leaflet
