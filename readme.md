@@ -18,7 +18,7 @@
    npx http-server
    ```
 
-## Switch Branches
+## Switch Between Branches
 ### For Leaflet
 - Checkout to 'leafletversion' branch of the app with leaflet.js
 ### For ArcGIS JS SDK
