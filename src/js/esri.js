@@ -137,47 +137,6 @@ require([
               }),
               popupTemplate: {
                 title: "{ADM3_NAME}",
-                // content: [
-                //     {
-                //         type: "custom",
-                //         creator: (feature) => {
-                //             // Create a container for popup content
-                //             const container = document.createElement("div");
-                //             console.log("feature.graphic.attributes", feature.graphic);
-                //             container.innerHTML = `
-                //                 <table class="esri-widget" style="width:100%; border-collapse: collapse;">
-                //                     <tr>
-                //                         <th colspan="2" style="text-align:center; background-color:#f0f0f0; padding:10px;">
-                //                             Upazila Demographics
-                //                         </th>
-                //                     </tr>
-                //                     <tr>
-                //                         <td style="padding:5px; border:1px solid #ddd;">Upazila Name</td>
-                //                         <td style="padding:5px; border:1px solid #ddd;">${feature.graphic.attributes.ADM3_NAME}</td>
-                //                     </tr>
-                //                     <tr>
-                //                         <td style="padding:5px; border:1px solid #ddd;">Upazila Code</td>
-                //                         <td style="padding:5px; border:1px solid #ddd;">${feature.graphic.attributes.ADM3_PCODE || 'N/A'}</td>
-                //                     </tr>
-                //                     <tr>
-                //                         <td style="padding:5px; border:1px solid #ddd;">Total Population</td>
-                //                         <td style="padding:5px; border:1px solid #ddd;">${feature.graphic.attributes.T_TL.toLocaleString()}</td>
-                //                     </tr>
-                //                     <tr>
-                //                         <td style="padding:5px; border:1px solid #ddd;">Male Population</td>
-                //                         <td style="padding:5px; border:1px solid #ddd;">${feature.graphic.attributes.M_TL ? feature.graphic.attributes.M_TL.toLocaleString() : 'N/A'}</td>
-                //                     </tr>
-                //                     <tr>
-                //                         <td style="padding:5px; border:1px solid #ddd;">Female Population</td>
-                //                         <td style="padding:5px; border:1px solid #ddd;">${feature.graphic.attributes.F_TL ? feature.graphic.attributes.F_TL.toLocaleString() : 'N/A'}</td>
-                //                     </tr>
-                                 
-                //                 </table>
-                //             `;
-                //             return container;
-                //         }
-                //     }
-                // ]
                 content: `
                 <table class="esri-widget" style="width:100%; border-collapse: collapse;">
                   <tr>
@@ -422,13 +381,11 @@ require([
             }
         };
 
-        // Highlight selected feature
         this.view.on("click", (event) => {
             this.view.hitTest(event).then((response) => {
                 if (response.results.length) {
                     const graphic = response.results[0].graphic;
                     
-                    // Ensure the graphic is from the population layer
                     if (graphic.layer.title === "Population Layer") {
                         this.view.popup.open({
                             features: [graphic],
@@ -457,7 +414,6 @@ require([
 
           if (!selectedUpazila) return;
 
-          // Query and zoom to the selected upazila
           this.populationGroup.layers.items[0].queryFeatures({
               where: `ADM3_PCODE = '${selectedUpazila}'`,
               outFields: ["*"]
