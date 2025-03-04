@@ -20,6 +20,6 @@
 
 ## Switch Between Branches
 ### For Leaflet
-- Checkout to 'leafletversion' branch of the app with leaflet.js
+- Checkout to 'leafversion' branch of the app with leaflet.js
 ### For ArcGIS JS SDK
 - Checkout to 'arcgisversion' branch of the app with ArcGIS JS SDK
