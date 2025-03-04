@@ -2,7 +2,6 @@ class LoadApp {
   constructor() {
     this.map = L.map('viewEsriMap').setView([23.8103, 90.4125], 7);
     
-    // Add base map tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
@@ -11,14 +10,12 @@ class LoadApp {
     // Layer groups
     this.populationLayer = L.layerGroup().addTo(this.map);
     this.buildingLayer = L.layerGroup().addTo(this.map);
-    // this.elevationLayer = L.layerGroup().addTo(this.map);
 
     this.initializeControls();
     this.loadGeojsonData();
   }
 
   initializeControls() {
-    // Layer toggle event listeners
     document.getElementById('population-toggle').addEventListener('change', (e) => {
         e.target.checked ? this.populationLayer.addTo(this.map) : this.map.removeLayer(this.populationLayer);
     });
@@ -37,16 +34,13 @@ class LoadApp {
 
   async loadGeojsonData() {
     try {
-        // Simulated data loading (replace with actual file paths)
         const [populationData, buildingData, elevationData] = await Promise.all([
             fetch('data/adm3_bbs_upazila.geojson').then(r => r.json()),
             fetch('data/buildingpoint_clip.geojson').then(r => r.json()),
-            // fetch('elevation.geojson').then(r => r.json())
         ]);
   
         this.processPopulationLayer(populationData);
         this.processBuildingLayer(buildingData);
-        // this.processElevationLayer(elevationData);
   
         this.populateUpazilaSelect(populationData);
     } catch (error) {
@@ -103,15 +97,6 @@ class LoadApp {
 }
   populateUpazilaSelect(data) {
     const select = document.getElementById('upazila-select');
-    // const upazilas = [...new Set(data.features.map(f => f.properties.ADM3_EN))];
-    // upazilas.forEach(upazila => {
-    //     const option = document.createElement('option');
-    //     option.value = ADM3_PCODE;
-    //     option.textContent = ADM3_PCODE;
-    //     select.appendChild(option);
-    // });
-//
-//
     const uniqueUpazilas = new Map(); 
 
     data.features.forEach(feature => {
