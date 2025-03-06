@@ -17,6 +17,8 @@
    ```bash
    npx http-server
    ```
+3. By default, the server should start at [IP]: 127.0.0.1:8080 
+4. Browse [IP] to try the Leaflet version.
 ## Switch Branches
 ### For Leaflet
 - Checkout to 'leafversion' branch of the app with leaflet.js

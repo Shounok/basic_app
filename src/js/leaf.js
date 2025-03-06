@@ -135,7 +135,7 @@ class LoadApp {
     infoPanel.innerHTML = `
         <h3>${feature.properties.ADM3_EN}</h3>
         <p>Population: ${feature.properties.T_TL}</p>
-        <p>Building Count: ${feature.properties.buildingCount || 'N/A'}</p>
+        <p>Building Count: ${feature.properties.SumofBuilding || 'N/A'}</p>
     `;
     infoPanel.style.display = 'block';
   }
