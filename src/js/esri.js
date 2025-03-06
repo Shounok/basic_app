@@ -21,13 +21,9 @@ require([
   GroupLayer, 
   LayerList,
   SimpleFillSymbol,
-  UniqueValueRenderer,
   ClassBreaksRenderer,
-  colorSymbology,
   Legend,
   Expand,
-  TextContent,
-  CustomContent
 ) {
   class LoadApp {
       constructor() {
@@ -47,7 +43,6 @@ require([
               zoom: 7
           });
 
-          // Create layer groups
           this.populationGroup = new GroupLayer({
               title: "Population Layer",
               visible: true
@@ -58,7 +53,6 @@ require([
           });
           
 
-          // Load GeoJSON layers
           await this.loadLayers();
 
           // Add layers to map
@@ -92,109 +86,125 @@ require([
       }
 
       async createPopulationLayer() {
-          const layer = new GeoJSONLayer({
-              title: "Population Layer",
-              url: "data/adm3_bbs_upazila.geojson",
-              // fields: ["ADM3_NAME", "ADM3_PCODE", "T_TL", "M_TL", "F_TL"],
-              renderer: new ClassBreaksRenderer({
-                  field: "T_TL",
-                  classBreakInfos: [
-                      
-                      {
-                          minValue: 50001,
-                          maxValue: 200000,
-                          symbol: new SimpleFillSymbol({
-                              color: [254, 204, 92, 0.7],
-                              outline: { color: [0, 0, 0, 0.5], width: 1 }
-                          })
-                      },
-                      {
-                          minValue: 200001,
-                          maxValue: 350000,
-                          symbol: new SimpleFillSymbol({
-                              color: [253, 141, 60, 0.7],
-                              outline: { color: [0, 0, 0, 0.5], width: 1 }
-                          })
-                      },
-                      {
-                          minValue: 350001,
-                          maxValue: 500000,
-                          symbol: new SimpleFillSymbol({
-                              color: [227, 26, 28, 0.7],
-                              outline: { color: [0, 0, 0, 0.5], width: 1 }
-                          })
-                      },
-                      {
-                        minValue: 500001,
-                        maxValue: Infinity,
+        const populationLabelClass = 
+            {
+                symbol: {
+                    color: "green",
+                    backgroundColor: [213, 184, 255, 0.75],
+                    borderLineColor: "green",
+                    borderLineSize: 1,
+                },
+                labelPlacement: "above-center",
+                labelExpressionInfo: {
+                    expression: "$feature.ADM3_NAME"
+                }
+            };
+        const layer = new GeoJSONLayer({
+            title: "Population Layer",
+            url: "data/adm3_bbs_upazila.geojson",
+            // fields: ["ADM3_EN", "ADM3_PCODE", "T_TL", "M_TL", "F_TL"],
+            renderer: new ClassBreaksRenderer({
+                field: "T_TL",
+                classBreakInfos: [
+                    
+                    {
+                        minValue: 50001,
+                        maxValue: 200000,
                         symbol: new SimpleFillSymbol({
-                            color: [255, 255, 178, 0.7],
+                            color: [254, 204, 92, 0.7],
                             outline: { color: [0, 0, 0, 0.5], width: 1 }
                         })
                     },
-                  ]
-              }),
-              popupTemplate: {
+                    {
+                        minValue: 200001,
+                        maxValue: 350000,
+                        symbol: new SimpleFillSymbol({
+                            color: [253, 141, 60, 0.7],
+                            outline: { color: [0, 0, 0, 0.5], width: 1 }
+                        })
+                    },
+                    {
+                        minValue: 350001,
+                        maxValue: 500000,
+                        symbol: new SimpleFillSymbol({
+                            color: [227, 26, 28, 0.7],
+                            outline: { color: [0, 0, 0, 0.5], width: 1 }
+                        })
+                    },
+                    {
+                    minValue: 500001,
+                    maxValue: Infinity,
+                    symbol: new SimpleFillSymbol({
+                        color: [255, 255, 178, 0.7],
+                        outline: { color: [0, 0, 0, 0.5], width: 1 }
+                    })
+                },
+                ]
+            }),
+            popupTemplate: 
+            {
                 title: "{ADM3_NAME}",
                 content: `
                 <table class="esri-widget" style="width:100%; border-collapse: collapse;">
-                  <tr>
-                          <th colspan="2" style="text-align:center; background-color:#f0f0f0; padding:10px;">
+                    <tr>
+                            <th colspan="2" style="text-align:center; background-color:#f0f0f0; padding:10px;">
                             Upazila Demographics
-                      </th>
-                  </tr>
-                  <tr>
+                        </th>
+                    </tr>
+                    <tr>
                     <td style="padding:5px; border:1px solid #ddd;">Upazila Code</td>
-                      <td style="padding:5px; border:1px solid #ddd;">{expression/upazilaCode}</td>
-                  </tr>
-                  <tr>
+                        <td style="padding:5px; border:1px solid #ddd;">{expression/upazilaCode}</td>
+                    </tr>
+                    <tr>
                     <td style="padding:5px; border:1px solid #ddd;">Upazila Name</td>
                     <td style="padding:5px; border:1px solid #ddd;">{expression/upazilaName}</td>
-                  </tr>
-                  <tr>
+                    </tr>
+                    <tr>
                     <td style="padding:5px; border:1px solid #ddd;">Total Population</td>
                     <td style="padding:5px; border:1px solid #ddd;">{expression/totalPopulation}</td>
-                  </tr>
-                  <tr>
-                  <td style="padding:5px; border:1px solid #ddd;">Male Population</td>
+                    </tr>
+                    <tr>
+                    <td style="padding:5px; border:1px solid #ddd;">Male Population</td>
                     <td style="padding:5px; border:1px solid #ddd;">{expression/totalMalePopulation}</td>
-                  </tr>
-                  <tr>
+                    </tr>
+                    <tr>
                     <td style="padding:5px; border:1px solid #ddd;">Female Population</td>
                     <td style="padding:5px; border:1px solid #ddd;">{expression/totalFemalePopulation}</td>
-                  </tr>
-                   <tr>
+                    </tr>
+                    <tr>
                     <td style="padding:5px; border:1px solid #ddd;">Total Building Count</td>
                     <td style="padding:5px; border:1px solid #ddd;">{expression/totalBuildingCount}</td>
-                  </tr>
+                    </tr>
                 </table>`,
                 expressionInfos: [
-                  {
+                    {
                     name: "upazilaCode",
                     expression: "$feature.ADM3_PCODE"
-                  },
-                  {
+                    },
+                    {
                     name: "upazilaName",
                     expression: "$feature.ADM3_EN"
-                  },
-                  {
+                    },
+                    {
                     name: "totalPopulation",
                     expression: "$feature.T_TL"
-                  },
-                  {
+                    },
+                    {
                     name: "totalMalePopulation",
                     expression: "$feature.M_TL"
-                  },
-                  {
+                    },
+                    {
                     name: "totalFemalePopulation",
                     expression: "$feature.F_TL"
-                  },
-                  {
+                    },
+                    {
                     name: "totalBuildingCount",
                     expression: "$feature.SumofBuilding"
-                  }
+                    }
                 ]
-            }
+            },
+            // labelingInfo : [populationLabelClass],
+            // labelsVisible: true,
           });
           return layer;
       }
@@ -210,8 +220,26 @@ require([
                     {
                         value: "commercial",
                         symbol: {
-                            type: "simple-marker",  // autocasts as new SimpleFillSymbol()
+                            type: "simple-marker",
                             color: "blue",
+                            style: "square",
+                            size: "3px",
+                        }
+                    },
+                    {
+                        value: "residential",
+                        symbol: {
+                            type: "simple-marker",
+                            color: "green",
+                            style: "square",
+                            size: "3px",
+                        }
+                    },
+                    {
+                        value: "industrial",
+                        symbol: {
+                            type: "simple-marker",
+                            color: "red",
                             style: "square",
                             size: "3px",
                         }
@@ -222,58 +250,6 @@ require([
           return layer;
       }
 
-      // async createElevationLayer() {
-      //     const layer = new GeoJSONLayer({
-      //         url: "elevation.geojson",
-      //         renderer: new ClassBreaksRenderer({
-      //             field: "elevation",
-      //             classBreakInfos: [
-      //                 {
-      //                     minValue: 0,
-      //                     maxValue: 10,
-      //                     symbol: new SimpleFillSymbol({
-      //                         color: [255, 0, 0, 0.7],
-      //                         outline: { color: [0, 0, 0, 0.5], width: 1 }
-      //                     })
-      //                 },
-      //                 {
-      //                     minValue: 11,
-      //                     maxValue: 25,
-      //                     symbol: new SimpleFillSymbol({
-      //                         color: [255, 255, 0, 0.7],
-      //                         outline: { color: [0, 0, 0, 0.5], width: 1 }
-      //                     })
-      //                 },
-      //                 {
-      //                     minValue: 26,
-      //                     maxValue: 50,
-      //                     symbol: new SimpleFillSymbol({
-      //                         color: [0, 255, 0, 0.7],
-      //                         outline: { color: [0, 0, 0, 0.5], width: 1 }
-      //                     })
-      //                 },
-      //                 {
-      //                     minValue: 51,
-      //                     maxValue: 100,
-      //                     symbol: new SimpleFillSymbol({
-      //                         color: [0, 255, 255, 0.7],
-      //                         outline: { color: [0, 0, 0, 0.5], width: 1 }
-      //                     })
-      //                 },
-      //                 {
-      //                     minValue: 101,
-      //                     maxValue: Infinity,
-      //                     symbol: new SimpleFillSymbol({
-      //                         color: [0, 0, 255, 0.7],
-      //                         outline: { color: [0, 0, 0, 0.5], width: 1 }
-      //                     })
-      //                 }
-      //             ]
-      //         })
-      //     });
-      //     return layer;
-      // }
-
       setupEventListeners() {
           // Layer toggle
           document.getElementById('population-toggle').addEventListener('change', (e) => {
@@ -283,10 +259,6 @@ require([
           document.getElementById('building-toggle').addEventListener('change', (e) => {
               this.buildingGroup.visible = e.target.checked;
           });
-
-          // document.getElementById('elevationToggle').addEventListener('change', (e) => {
-          //     this.elevationGroup.visible = e.target.checked;
-          // });
 
           // Search button
           document.getElementById('search-btn').addEventListener('click', () => {
