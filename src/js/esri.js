@@ -63,8 +63,9 @@ require([
 
           // Add layers to map
           this.map.addMany([
-              this.populationGroup, 
-              this.buildingGroup, 
+            this.populationGroup,
+            this.buildingGroup, 
+             
           ]);
           
           // Setup event listeners
@@ -74,19 +75,16 @@ require([
 
       async loadLayers() {
           try {
-              // Population Layer
               const populationLayer = await this.createPopulationLayer();
               this.populationGroup.add(populationLayer);
               this.setupPopupHandler(populationLayer);
 
-              // Building Layer
+           
               const buildingLayer = await this.createBuildingLayer();
               this.buildingGroup.add(buildingLayer);
 
-              // Populate Upazila Select
+            
               this.populateUpazilaSelect(populationLayer);
-
-              // Setup click handler for spatial queries
               this.setupSpatialQueries(populationLayer);
           } catch (error) {
               console.error("Error loading layers:", error);
@@ -101,38 +99,39 @@ require([
               renderer: new ClassBreaksRenderer({
                   field: "T_TL",
                   classBreakInfos: [
+                      
                       {
-                          minValue: 0,
-                          maxValue: 5000,
-                          symbol: new SimpleFillSymbol({
-                              color: [255, 255, 178, 0.7],
-                              outline: { color: [0, 0, 0, 0.5], width: 1 }
-                          })
-                      },
-                      {
-                          minValue: 5001,
-                          maxValue: 25000,
+                          minValue: 50001,
+                          maxValue: 200000,
                           symbol: new SimpleFillSymbol({
                               color: [254, 204, 92, 0.7],
                               outline: { color: [0, 0, 0, 0.5], width: 1 }
                           })
                       },
                       {
-                          minValue: 25001,
-                          maxValue: 50000,
+                          minValue: 200001,
+                          maxValue: 350000,
                           symbol: new SimpleFillSymbol({
                               color: [253, 141, 60, 0.7],
                               outline: { color: [0, 0, 0, 0.5], width: 1 }
                           })
                       },
                       {
-                          minValue: 50001,
-                          maxValue: Infinity,
+                          minValue: 350001,
+                          maxValue: 500000,
                           symbol: new SimpleFillSymbol({
                               color: [227, 26, 28, 0.7],
                               outline: { color: [0, 0, 0, 0.5], width: 1 }
                           })
-                      }
+                      },
+                      {
+                        minValue: 500001,
+                        maxValue: Infinity,
+                        symbol: new SimpleFillSymbol({
+                            color: [255, 255, 178, 0.7],
+                            outline: { color: [0, 0, 0, 0.5], width: 1 }
+                        })
+                    },
                   ]
               }),
               popupTemplate: {
@@ -164,6 +163,10 @@ require([
                     <td style="padding:5px; border:1px solid #ddd;">Female Population</td>
                     <td style="padding:5px; border:1px solid #ddd;">{expression/totalFemalePopulation}</td>
                   </tr>
+                   <tr>
+                    <td style="padding:5px; border:1px solid #ddd;">Total Building Count</td>
+                    <td style="padding:5px; border:1px solid #ddd;">{expression/totalBuildingCount}</td>
+                  </tr>
                 </table>`,
                 expressionInfos: [
                   {
@@ -185,6 +188,10 @@ require([
                   {
                     name: "totalFemalePopulation",
                     expression: "$feature.F_TL"
+                  },
+                  {
+                    name: "totalBuildingCount",
+                    expression: "$feature.SumofBuilding"
                   }
                 ]
             }
@@ -195,32 +202,22 @@ require([
       async createBuildingLayer() {
           const layer = new GeoJSONLayer({
               url: "data/buildingpoint_clip.geojson",
-              renderer: new UniqueValueRenderer({
-                  field: "building",
-                  uniqueValueInfos: [
-                      {
-                          value: "residential",
-                          symbol: new SimpleFillSymbol({
-                              color: [51, 136, 255, 0.6],
-                              outline: { color: [0, 0, 0, 0.5], width: 1 }
-                          })
-                      },
-                      {
-                          value: "commercial",
-                          symbol: new SimpleFillSymbol({
-                              color: [255, 0, 0, 0.6],
-                              outline: { color: [0, 0, 0, 0.5], width: 1 }
-                          })
-                      },
-                      {
-                          value: "industrial",
-                          symbol: new SimpleFillSymbol({
-                              color: [0, 255, 0, 0.6],
-                              outline: { color: [0, 0, 0, 0.5], width: 1 }
-                          })
-                      }
-                  ]
-              })
+              field: "building",
+              renderer: {
+                type: 'unique-value',
+                defaultSymbol: { type: "simple-marker", style: "square" },
+                uniqueValueInfos: [
+                    {
+                        value: "commercial",
+                        symbol: {
+                            type: "simple-marker",  // autocasts as new SimpleFillSymbol()
+                            color: "blue",
+                            style: "square",
+                            size: "3px",
+                        }
+                    }
+                ],
+              },
           });
           return layer;
       }
@@ -397,13 +394,13 @@ require([
         });
     }
       displayUpazilaInfo(graphic) {
-          const infoPanel = document.getElementById('infoPanel');
+          const infoPanel = document.getElementById('info-panel');
           const attrs = graphic.attributes;
           
           infoPanel.innerHTML = `
               <h3>${attrs.ADM3_EN || 'Upazila Details'}</h3>
               <p>Population: ${attrs.T_TL || 'N/A'}</p>
-              <p>Building Count: ${attrs.buildingCount || 'N/A'}</p>
+              <p>Building Count: ${attrs.SumofBuilding || 'N/A'}</p>
           `;
           infoPanel.style.display = 'block';
       }
