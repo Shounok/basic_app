@@ -16,3 +16,6 @@
 .ionide
 
 data/buildingpoly.geojson
+
+# Ignore all Backup Files
+.backup
