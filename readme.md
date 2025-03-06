@@ -17,7 +17,9 @@
    ```bash
    npx http-server
    ```
-3. Open the 'index.html' in the root folder.
+3. By default, the server should start locally at [IP]: 127.0.0.1:8080. 
+4. Browse [IP] for ArcGIS JS SDK version.
+5. Browse '[IP]/leafindex.html' for Leaflet JS version.
 
 ## Switch Between Branches
 ### For Leaflet
